@@ -1,5 +1,6 @@
 const express = require('express');
 const { dbConnection } = require('./db/config');
+const cors = require('cors')
 require('dotenv').config()
 
 // create server
@@ -7,6 +8,9 @@ const app = express();
 
 // Mongo DB
 dbConnection();
+
+//cors
+app.use(cors())
 
 //Public dir
 app.use( express.static('public') )
