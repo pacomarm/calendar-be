@@ -1,8 +1,12 @@
-const express = require('express')
+const express = require('express');
+const { dbConnection } = require('./db/config');
 require('dotenv').config()
 
 // create server
 const app = express();
+
+// Mongo DB
+dbConnection();
 
 //Public dir
 app.use( express.static('public') )
