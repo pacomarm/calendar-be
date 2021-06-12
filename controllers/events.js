@@ -22,7 +22,7 @@ const createEvent = async(req,res = response) => {
         })
     } catch (e){
         console.log(e);
-        return res,status(500).json({
+        return res.status(500).json({
             ok: false,
             msg: 'Error bro'
         })
@@ -30,10 +30,48 @@ const createEvent = async(req,res = response) => {
 
 }
 const updateEvent = async(req,res = response) => {
-    res.json({
-        ok: true,
-        msg: 'update event'
-    })
+
+    const eventId = req.params.id;
+    const uid = req.uid;
+
+    try{
+
+        const event = await Event.findById(eventId);
+
+        if(!event){
+            return res.status(404).json({
+            ok: false,
+            msg: 'ID of event DNE bro'
+            })
+        }
+
+        if (event.user.toString() !== uid){
+            console.log('hola');
+            return res.status(401).json({
+                ok: false,
+                msg: 'You cant edit the Event bro'
+                })
+        }
+
+        const newEvent = {
+            ...req.body,
+            user: uid
+        }
+
+        const updatedEvent = await Event.findByIdAndUpdate( eventId, newEvent, { new: true} )
+
+        return res.json({
+            ok: true,
+            event: updatedEvent
+        })
+
+    } catch (e){
+        console.log(e);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error bro'
+        })
+    }
 }
 const deleteEvent = async(req,res = response) => {
     res.json({
