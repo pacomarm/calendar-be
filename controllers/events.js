@@ -46,7 +46,6 @@ const updateEvent = async(req,res = response) => {
         }
 
         if (event.user.toString() !== uid){
-            console.log('hola');
             return res.status(401).json({
                 ok: false,
                 msg: 'You cant edit the Event bro'
@@ -74,10 +73,42 @@ const updateEvent = async(req,res = response) => {
     }
 }
 const deleteEvent = async(req,res = response) => {
-    res.json({
-        ok: true,
-        msg: 'delete event'
-    })
+
+    const eventId  = req.params.id;
+    const uid = req.uid
+
+    try{
+
+        const event = await Event.findById(eventId);
+
+        if(!event){
+            return res.status(404).json({
+            ok: false,
+            msg: 'ID of event DNE bro'
+            })
+        }
+
+        if (event.user.toString() !== uid){
+            return res.status(401).json({
+                ok: false,
+                msg: 'You cant delete the Event bro'
+                })
+        }
+
+        await Event.findByIdAndDelete( eventId )
+
+        return res.json({
+            ok: true,
+            msg: 'Event has been deleted'
+        })
+
+    } catch (e){
+        console.log(e);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error bro'
+        })
+    }
 }
 
 module.exports = {getEvents, createEvent, updateEvent, deleteEvent}
