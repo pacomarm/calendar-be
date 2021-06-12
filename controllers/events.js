@@ -2,9 +2,12 @@ const {response} = require('express');
 const Event = require('../models/Event');
 
 const getEvents = async(req,res = response) => {
+
+    const events = await Event.find().populate('user','name'); // populate is used to get the info of the user that created the event, we only want the name of the User obj
+
     res.json({
         ok: true,
-        msg: 'get events'
+        events
     })
 }
 const createEvent = async(req,res = response) => {
